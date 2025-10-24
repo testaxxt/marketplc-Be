@@ -6,8 +6,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-        "build": "tsc",
-
+    "build": "tsc",
     "client": "cd client && npm start",
     "install-all": "npm install && cd client && npm install",
     "seed": "node src/seed"

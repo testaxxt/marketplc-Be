@@ -18,8 +18,21 @@ const adminNotifications = require('./routes/notification.routes');
 const app = express();
 
 // Middleware
-app.use(cors());
-app.use(express.json());
+const allowedOrigins = ['http://localhost:5173', 'hhttps://www.shoplogshere.com'];
+
+
+
+app.use(cors({
+  origin: function(origin, callback){
+    if (!origin) return callback(null, true); // allow non-browser clients like Postman
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true, // if you need cookies
+}));app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Database connection
