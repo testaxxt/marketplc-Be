@@ -18,7 +18,7 @@ const adminNotifications = require('./routes/notification.routes');
 const app = express();
 
 // Middleware
-const allowedOrigins = ['http://localhost:5173', 'hhttps://www.shoplogshere.com'];
+const allowedOrigins = ['http://localhost:5173', 'https://www.shoplogshere.com'];
 
 
 
