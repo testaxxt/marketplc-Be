@@ -1,6 +1,6 @@
 const Order = require('../models/Order.model');
 const Product = require('../models/Product.model');
-const User = require('../models/User.Model');
+const User = require('../models/User.model');
 const Transaction = require('../models/Transaction.model');
 
 // Generate unique transaction reference
