@@ -1,4 +1,4 @@
-const Resend = require('resend');
+const { Resend } = require('resend');  // <-- note the destructuring
 const dotenv = require('dotenv');
 
 dotenv.config();
