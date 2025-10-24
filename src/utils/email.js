@@ -1,28 +1,19 @@
-const nodemailer = require('nodemailer');
-const dotenv = require("dotenv")
+const Resend = require('resend');
+const dotenv = require('dotenv');
 
+dotenv.config();
 
-dotenv.config()
-
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,   // e.g. smtp.gmail.com
-  port: process.env.EMAIL_PORT,   // usually 465 or 587
-  secure: process.env.EMAIL_SECURE === 'true', // true for 465
-  auth: {
-    user: process.env.EMAIL_USER, // your email
-    pass: process.env.EMAIL_PASS  // app password or SMTP pass
-  }
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 exports.sendEmail = async (to, subject, html) => {
   try {
-    await transporter.sendMail({
-      from: `"ShopLogsHere" <${process.env.EMAIL_USER}>`,
+    const response = await resend.emails.send({
+      from: 'no-reply@shoplogshere.com', // must be verified in Resend
       to,
       subject,
-      html
+      html,
     });
-    console.log(`✅ Email sent to ${to}`);
+    console.log(`✅ Email sent to ${to}`, response);
   } catch (error) {
     console.error(`❌ Error sending email: ${error.message}`);
   }
