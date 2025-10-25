@@ -16,7 +16,7 @@ exports.welcomeEmail = (name) => `
               <h1 style="color: #1a73e8;">Welcome, ${name} 🎉</h1>
               <p style="color: #555555; font-size: 16px;">Thanks for joining ShopLogs! We’re excited to have you here.</p>
               <p style="color: #555555; font-size: 16px;">Get started by exploring your dashboard and discovering all the features we’ve built for you.</p>
-              <a href="https://yourwebsite.com/dashboard" style="display: inline-block; margin: 20px 0; padding: 12px 25px; background-color: #1a73e8; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold;">Go to Dashboard</a>
+              <a href="https://shopwithlogshere.com" style="display: inline-block; margin: 20px 0; padding: 12px 25px; background-color: #1a73e8; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold;">Go to Dashboard</a>
               <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
               <p style="color: #999999; font-size: 12px;">&copy; 2025 ShopLogs. All rights reserved.</p>
             </td>
