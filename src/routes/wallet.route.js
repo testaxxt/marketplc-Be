@@ -1,23 +1,21 @@
 // src/routes/wallet.route.js
 const express = require('express');
 const router = express.Router();
-const { authenticate } = require('../middleware/auth.middleware');
+const { authenticate, isAdmin } = require('../middleware/auth.middleware');
 const walletController = require('../controllers/wallet.controller');
-
-// Debug: Check what's imported
-console.log('Wallet Controller:', walletController);
-console.log('fundWallet:', walletController.fundWallet);
-console.log('getTransactions:', walletController.getTransactions);
-console.log('getWalletBalance:', walletController.getWalletBalance);
 
 const {
   fundWallet,
   getTransactions,
-  getWalletBalance
+  getWalletBalance,
+  adminUpdateWallet
 } = walletController;
 
 router.post('/fund', authenticate, fundWallet);
 router.get('/transactions', authenticate, getTransactions);
 router.get('/balance', authenticate, getWalletBalance);
+
+// Admin route to directly credit/debit a user's wallet
+router.post('/admin/update', authenticate, isAdmin, adminUpdateWallet);
 
 module.exports = router;

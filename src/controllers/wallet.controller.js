@@ -120,8 +120,86 @@ const getWalletBalance = async (req, res) => {
   }
 };
 
+// Admin: Directly credit or debit a user's wallet
+const adminUpdateWallet = async (req, res) => {
+  try {
+    const { userId, amount, action, description } = req.body;
+
+    if (!userId || !amount || !action) {
+      return res.status(400).json({
+        success: false,
+        message: 'userId, amount, and action are required'
+      });
+    }
+
+    if (!['credit', 'debit'].includes(action)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Action must be "credit" or "debit"'
+      });
+    }
+
+    if (amount <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Amount must be greater than 0'
+      });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    if (action === 'debit' && user.walletBalance < amount) {
+      return res.status(400).json({
+        success: false,
+        message: 'Insufficient wallet balance'
+      });
+    }
+
+    const balanceBefore = user.walletBalance;
+
+    if (action === 'credit') {
+      user.walletBalance += amount;
+    } else {
+      user.walletBalance -= amount;
+    }
+
+    await user.save();
+
+    const transaction = await Transaction.create({
+      user: userId,
+      type: action,
+      amount,
+      description: description || `Admin ${action}`,
+      status: 'completed',
+      paymentMethod: 'wallet',
+      reference: generateReference(),
+      balanceBefore,
+      balanceAfter: user.walletBalance
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Wallet ${action}ed successfully`,
+      data: { transaction, newBalance: user.walletBalance }
+    });
+  } catch (error) {
+    console.error('Admin update wallet error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating wallet'
+    });
+  }
+};
+
 module.exports = {
   fundWallet,
   getTransactions,
-  getWalletBalance
+  getWalletBalance,
+  adminUpdateWallet
 };
