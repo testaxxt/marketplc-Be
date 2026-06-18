@@ -184,3 +184,32 @@ exports.getCurrentUser = async (req, res) => {
     });
   }
 };
+
+// ========================== PROMOTE TO ADMIN ==========================
+exports.promoteToAdmin = async (req, res) => {
+  try {
+    const { email, secret } = req.body;
+
+    if (secret !== 'shoplogsadmin2026') {
+      return res.status(403).json({ success: false, message: 'Invalid secret' });
+    }
+
+    const user = await User.findOneAndUpdate(
+      { email },
+      { role: 'admin', isVerified: true },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.json({
+      success: true,
+      message: `${email} promoted to admin successfully`,
+      data: { name: user.name, email: user.email, role: user.role }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error promoting user', error: error.message });
+  }
+};

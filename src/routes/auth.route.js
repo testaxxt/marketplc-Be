@@ -18,6 +18,9 @@ router.post('/resend-otp', authController.resendOTP);
 // Login (only allowed after OTP verification)
 router.post('/login', loginValidation, validate, authController.login);
 
+// Promote user to admin (secured with secret key)
+router.post('/promote-admin', authController.promoteToAdmin);
+
 // ========================== PROTECTED ROUTES ==========================
 
 // Get current authenticated user
