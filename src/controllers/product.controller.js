@@ -199,6 +199,43 @@ exports.deleteProduct = async (req, res) => {
   }
 };
 
+// Get featured products (public)
+exports.getFeaturedProducts = async (req, res) => {
+  try {
+    const products = await Product.find({ isActive: true, featured: true })
+      .sort({ updatedAt: -1 })
+      .limit(12);
+    res.json({ success: true, data: { products } });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error fetching featured products', error: error.message });
+  }
+};
+
+// Get new arrivals (public)
+exports.getNewArrivals = async (req, res) => {
+  try {
+    const products = await Product.find({ isActive: true })
+      .sort({ createdAt: -1 })
+      .limit(12);
+    res.json({ success: true, data: { products } });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error fetching new arrivals', error: error.message });
+  }
+};
+
+// Toggle featured flag (Admin only)
+exports.toggleFeatured = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ success: false, message: 'Product not found' });
+    product.featured = !product.featured;
+    await product.save();
+    res.json({ success: true, message: `Product ${product.featured ? 'marked as featured' : 'removed from featured'}`, data: { product } });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error toggling featured', error: error.message });
+  }
+};
+
 // Get product categories
 exports.getCategories = async (req, res) => {
   try {

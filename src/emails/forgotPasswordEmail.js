@@ -1,10 +1,10 @@
-exports.otpEmail = (otp) => `
+exports.forgotPasswordEmail = (name, otp) => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Verify your email — ShopLogs</title>
+  <title>Reset your password — ShopLogs</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f4f4f5;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f4f5;padding:40px 0;">
@@ -16,26 +16,26 @@ exports.otpEmail = (otp) => `
           <tr>
             <td style="background-color:#111827;padding:28px 40px;">
               <p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:-0.3px;">ShopLogs</p>
-              <p style="margin:4px 0 0;color:#9ca3af;font-size:12px;">Premium Logs Marketplace</p>
+              <p style="margin:4px 0 0;color:#9ca3af;font-size:12px;">Password Reset</p>
             </td>
           </tr>
 
           <!-- Body -->
           <tr>
             <td style="padding:40px 40px 32px;">
-              <h1 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#111827;letter-spacing:-0.3px;">Verify your email address</h1>
+              <h1 style="margin:0 0 12px;font-size:22px;font-weight:700;color:#111827;letter-spacing:-0.3px;">Reset your password, ${name}</h1>
               <p style="margin:0 0 28px;font-size:15px;color:#6b7280;line-height:1.6;">
-                Use the code below to verify your account. This code expires in <strong style="color:#111827;">10 minutes</strong>.
+                We received a request to reset the password for your ShopLogs account. Use the code below — it expires in <strong style="color:#111827;">10 minutes</strong>.
               </p>
 
               <!-- OTP Box -->
               <div style="background-color:#f9fafb;border:1px solid #e4e4e7;border-radius:10px;padding:28px;text-align:center;margin-bottom:28px;">
-                <p style="margin:0 0 8px;font-size:12px;font-weight:600;color:#9ca3af;letter-spacing:0.08em;text-transform:uppercase;">Your verification code</p>
+                <p style="margin:0 0 8px;font-size:12px;font-weight:600;color:#9ca3af;letter-spacing:0.08em;text-transform:uppercase;">Your reset code</p>
                 <p style="margin:0;font-size:48px;font-weight:800;color:#111827;letter-spacing:0.2em;">${otp}</p>
               </div>
 
               <p style="margin:0;font-size:13px;color:#9ca3af;line-height:1.6;">
-                If you didn't request this code, you can safely ignore this email. Someone may have entered your email address by mistake.
+                If you didn't request a password reset, you can safely ignore this email. Your password will not change.
               </p>
             </td>
           </tr>

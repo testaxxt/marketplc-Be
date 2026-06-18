@@ -8,6 +8,8 @@ const upload = require('../middleware/upload'); // 👈 import Cloudinary upload
 // Public routes
 router.get('/', optionalAuth, productController.getAllProducts);
 router.get('/categories', productController.getCategories);
+router.get('/featured', productController.getFeaturedProducts);
+router.get('/new-arrivals', productController.getNewArrivals);
 router.get('/:id', optionalAuth, productController.getProductById);
 
 // Admin routes
@@ -30,5 +32,6 @@ router.put(
 );
 
 router.delete('/:id', authenticate, isAdmin, productController.deleteProduct);
+router.patch('/:id/featured', authenticate, isAdmin, productController.toggleFeatured);
 
 module.exports = router;

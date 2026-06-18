@@ -7,5 +7,7 @@ const { authenticate, isAdmin } = require('../middleware/auth.middleware');
 router.get('/', authenticate, isAdmin, userController.getAllUsers);
 router.get('/:id', authenticate, isAdmin, userController.getUserById);
 router.patch('/:id/status', authenticate, isAdmin, userController.updateUserStatus);
+router.patch('/:id/role', authenticate, isAdmin, userController.updateUserRole);
+router.patch('/:id/balance', authenticate, isAdmin, userController.adjustUserBalance);
 
 module.exports = router;

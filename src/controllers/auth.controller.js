@@ -4,6 +4,7 @@ const { sendEmail } = require('../utils/email');
 const { welcomeEmail } = require('../emails/welcomeEmail');
 const { loginAlertEmail } = require('../emails/loginAlertEmail');
 const { otpEmail } = require('../emails/otpEmail');
+const { forgotPasswordEmail } = require('../emails/forgotPasswordEmail');
 
 // Generate JWT token
 const generateToken = (id) => {
@@ -182,6 +183,90 @@ exports.getCurrentUser = async (req, res) => {
       message: 'Error getting user data',
       error: error.message
     });
+  }
+};
+
+// ========================== FORGOT PASSWORD ==========================
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.json({ success: true, message: 'If an account exists with that email, a reset code has been sent.' });
+    }
+
+    const otp = await user.generateOTP();
+    await sendEmail(email, 'Reset Your Password — ShopLogs', forgotPasswordEmail(user.name, otp));
+
+    res.json({ success: true, message: 'Password reset code sent to your email.' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error sending reset email', error: error.message });
+  }
+};
+
+// ========================== RESET PASSWORD ==========================
+exports.resetPassword = async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+    }
+
+    const user = await User.findOne({ email }).select('+otp +otpExpires');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const isValid = await user.verifyOTP(otp);
+    if (!isValid) {
+      return res.status(400).json({ success: false, message: 'Invalid or expired reset code' });
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ success: true, message: 'Password reset successfully. You can now log in.' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error resetting password', error: error.message });
+  }
+};
+
+// ========================== UPDATE PROFILE ==========================
+exports.updateProfile = async (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name || name.trim().length < 2) {
+      return res.status(400).json({ success: false, message: 'Name must be at least 2 characters' });
+    }
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { name: name.trim() },
+      { new: true }
+    ).select('-password');
+    res.json({ success: true, message: 'Profile updated successfully', data: { user } });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error updating profile', error: error.message });
+  }
+};
+
+// ========================== CHANGE PASSWORD ==========================
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!newPassword || newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: 'New password must be at least 6 characters' });
+    }
+    const user = await User.findById(req.user._id).select('+password');
+    if (!(await user.comparePassword(currentPassword))) {
+      return res.status(401).json({ success: false, message: 'Current password is incorrect' });
+    }
+    user.password = newPassword;
+    await user.save();
+    res.json({ success: true, message: 'Password changed successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error changing password', error: error.message });
   }
 };
 

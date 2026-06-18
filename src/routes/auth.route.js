@@ -21,9 +21,19 @@ router.post('/login', loginValidation, validate, authController.login);
 // Promote user to admin (secured with secret key)
 router.post('/promote-admin', authController.promoteToAdmin);
 
+// Forgot / reset password
+router.post('/forgot-password', authController.forgotPassword);
+router.post('/reset-password', authController.resetPassword);
+
 // ========================== PROTECTED ROUTES ==========================
 
 // Get current authenticated user
 router.get('/me', authenticate, authController.getCurrentUser);
+
+// Update profile (name)
+router.patch('/update-profile', authenticate, authController.updateProfile);
+
+// Change password
+router.patch('/change-password', authenticate, authController.changePassword);
 
 module.exports = router;
